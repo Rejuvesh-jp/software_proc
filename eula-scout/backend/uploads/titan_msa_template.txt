@@ -1,0 +1,362 @@
+MASTER SERVICES AGREEMENT
+
+This Master Services Agreement (“Agreement”) is executed  
+
+Between 
+
+Titan Company Limited, a company incorporated under the Companies Act, 1956, with its registered office at No. 3 SIPCOT Industrial Complex, Hosur- 635 126 and corporate office at `Integrity', #193, Veerasandra, Electronics City P.O., Off Hosur Main Road, Bangalore- 560100 (“hereinafter Titan” which expression shall, unless repugnant to the context or meaning thereof, be deemed to mean and include its include its successors and permitted assigns) herein represented by its authorized signatory ________________of the One Part;
+
+
+
+And 
+
+______________________, a company incorporated under the Companies Act 1956/2013, and having its registered office at _________________________________________ (hereinafter “Service Provider” which expression shall, unless repugnant to the context or meaning thereof, be deemed to mean and include its include its successors and permitted assigns) herein represented by its authorized signatory ________________of the Other Part. 
+
+
+
+For the purposes of this Agreement, Titan and the Service Provider may each be referred to as “Party” or, collectively, as the “Parties.” The Parties intending to be legally bound, agree as follows:
+
+Services.
+
+1.1 Services. Titan and the Service Provider will enter into one or more statements of work incorporating a description of the specific services to be provided in a form mutually agreed by the Parties (a “Statement of Work”). Each Statement of Work will set forth, among other things, project scope, various project activities and tasks to be performed by the Parties, and roles and responsibilities of the Parties. The Service Provider will provide to Titan those services described as its obligation in each Statement of Work (collectively, the “Services”) and the items defined as deliverables in each Statement of Work (collectively, the “Deliverables”). Each Statement of Work shall specifically identify this Agreement and indicate that it is subject to the terms hereof and be executed by Titan and the Service Provider. To the extent there are any conflicts or inconsistencies between this Agreement and any Statement of Work, the provisions of this Agreement shall overrule.
+
+1.2 Deliverables and Acceptance. Deliverables, if any, under this Agreement will be as set forth under the Statement of Work. Each Deliverable will not be treated as accepted by Titan unless specifically stated by Titan in writing as accepted. 
+
+
+
+PROJECT SCHEDULE; CHANGES.
+
+Project Schedule; Changes. Each Statement of Work will set forth the projected work effort and schedule applicable to the Services. The Service Provider will be fully liable for any delay, default, failure or non- conformity of  Services or Deliverable from the description stated in the Statement of Work. Either Party will be entitled to propose changes to the Services or Deliverables, provided the same is mutually agreed between the Parties and a change order or an amendment to the 3. Statement of Work.
+
+3. PAYMENT.
+
+Project Fees and Reimbursable Items. Titan shall pay to the Service Provider the fees set forth in each Statement of Work. Titan will also reimburse the Service Provider for all reasonable out-of-pocket expenses paid or incurred by the Service Provider in connection with the Services and any other reimbursable items set forth in each Statement of Work, provided the same is pre- approved by the Titan in writing in each instance.
+
+The Service Provider agrees and covenants that Titan has the right to withhold, delay, make part-payment or non-payment of the fees and other payments in case the Services performed by the Service Provider are not in accordance to the terms of the Statement of Work or this Agreement or are not satisfactory to Titan.
+
+Invoices; Payments. The Service Provider will invoice Titan for all fees, charges and reimbursable items payable to the Service Provider on a monthly basis. Titan will pay the undisputed invoiced amount within forty five (45) days of the date of receipt of each invoice by Titan from the Service Provider and all supporting documentation. Tax deduction at source on the fees shall applicable as per the extant Income Tax Act, 1961.
+
+Taxes. Titan will bear the goods and service tax in relation to this Agreement. Apart from the above taxes, the Service Provider will bear all other taxes applicable in relation to this Agreement/ Statement of Work. 
+
+
+
+4. REPRESENTATIONS AND WARRANTIES.
+
+4.1 Representations, Warranties and Covenants of the Service Provider. 
+
+4.1.1    It has all requisite power and authority to execute and deliver this Agreement and has all necessary power and authority to perform the obligations as set out herein;
+
+
+
+4.1.2     The entering into of this Agreement will not result in the violation of any constitutional documents of the Service Provider or the terms and provisions of any agreement, written or oral, to which the Service Provider may be a Party;
+
+
+
+4.1.3 When this Agreement is duly executed and delivered by the Service Provider, it will constitute legal 
+
+          and binding obligation on the Service Provider enforceable in accordance with its terms;
+
+
+
+4.1.4 During the term of this Agreement, the Service Provider agrees to comply with all applicable laws;
+
+
+
+4.1.5 It is an expert in the delivery of the Services and Deliverables.  Further, the Service Provider
+
+         understands Titan’s specific requirements with respect to the Services and Deliverables;
+
+
+
+4.1.6 It shall perform/ deliver the Services in a professional manner and free from all encumbrances;
+
+
+
+4.1.7 The use of Services and Deliverables by Titan as contemplated under this Agreement does not and
+
+         will not infringe  any intellectual property rights of any third party;
+
+
+
+4.1.8 It shall not use any intellectual property rights of Titan without the prior written approval of Titan;
+
+
+
+4.1.19 It will meet the IT security requirement as detailed herein  Annexure A
+
+
+
+4.1.10 Titan will have the right to carry out audits on the security system of the Service Provider, after 
+
+           providing the Service Provider a reasonable notice period;
+
+ 
+
+ 4.1.11 It will comply with all data security and data privacy laws under the applicable laws.
+
+
+
+4.1.12 The Service Provider represents and warrants to Titan that in case of breach of any of the terms of
+
+           the Agreement by the Service Provider, Titan shall have the right to claim damages from the Service
+
+           Provider.
+
+
+
+4.1.13 The Service Provider agrees that it shall diligently render professional services to Titan in a timely, 
+
+           professional and workmanlike manner. 
+
+
+
+4.1.14 The Service Provider shall at all times be responsible for the conduct and performance of its
+
+           personnel, employees, agents, etc and shall periodically supervise the work of its personnel, 
+
+           employees, agents, etc in delivery and performance of the Services/ Deliverables. 
+
+5. INTELLECTUAL PROPERTY RIGHTS.
+
+The Service Provider hereby acknowledges that the Services shall be performed pursuant to the direction and control of Titan. The Service Provider agrees that all Intellectual Property Rights originated, conceived, written, made or discovered by it during the term or using the resources of Titan shall be deemed to be “work made for hire” for Titan (under the applicable law) and all such intellectual property rights shall automatically vest in Titan from the very beginning.  Notwithstanding the generality of the foregoing, the Service Provider assigns to Titan by way of future assignment all intellectual property rights for the full terms thereof throughout the world in respect of all intellectual property rights originated, conceived, written, made or discovered by it during the term or using the resources of Titan. The Service Provider will promptly disclose to Titan all intellectual property rights, including for the avoidance of doubt know-how, trademarks, service marks, patents, copyrights and design rights, of whatsoever nature, whether registered or un-registered, whether registrable or non- registrable, whether accruing as a result of law or fact, conceived, written or made by it  and shall hold them in trust for Titan until such rights shall be fully and absolutely vested in Titan. The Service Provider shall, at the request and expense of Titan, execute all necessary deeds and documents to vest all the intellectual property rights developed by it with Titan and do all things necessary or desirable to substantiate the rights of Titan under this Section 5. The Service Provider agrees and acknowledges that the fee paid to it by Titan under this Agreement includes compensation for the assignment to Titan of all intellectual property rights and that the rights and obligations under this Section 5 shall continue in force after the termination of this Agreement in respect of any intellectual property rights created during the term and shall be binding upon its legal representatives. This Section 5 shall survive termination of this Agreement for any reason.
+
+6. CONFIDENTIAL INFORMATION AND INSIDER TRADING.
+
+Definition. The term “Confidential Information” includes Titan’s tangible, intangible, visual, electronic, present, or future information, data or material, inter alia: (a) trade secrets; (b) financial information, including pricing; (c) technical information, including research, development, procedures, algorithms, data, designs, and know-how; (d) business information, including operations, planning, marketing interests, and products; (e) the terms of any agreement entered into between the Parties and the discussions, negotiations and proposals related thereto; (f) information acquired during any facilities tours and (g) any and all confidential or proprietary information disclosed by Titan to the Service Provider, in whatever format including oral information, post the execution of this Agreement, regardless of whether such information is communicated orally, in writing, pictorially or by electronic transmission.  It also includes (a) the software; (b) any sensitive personal data or information/ personal information as defined under the Information Technology (Reasonable security practices and procedures and sensitive personal data or information) Rules, 2011 regarding any employee/person receiving benefits from Titan; (c) any and all information disclosed by Titan to the Service Provider, in whatever format, that is either identified as or would reasonably be understood to be confidential and/or proprietary;
+
+Confidentiality Obligations. For a period of five (5) years from the date of disclosure of the applicable Confidential Information (as hereinafter defined), the Service Provider shall each (i) hold the Confidential Information of Titan  in trust and confidence and avoid the disclosure or release thereof to any other person or entity by using the same degree of care as it uses to avoid unauthorized use, disclosure, or dissemination of its own Confidential Information of a similar nature, but not less than reasonable care, and (ii) not use the Confidential Information of the other Party for any purpose whatsoever except as expressly contemplated under this Agreement or any Statement of Work. The Service Provider shall disclose the Confidential Information of Titan only to those of its employees having a need to know such Confidential Information and shall take all reasonable precautions to ensure that such employees comply with the provisions of this Section 6.1. Notwithstanding anything provided in the Agreement, the confidentiality obligations of the Service Provider in relation to any personal information or sensitive personal data or information or trade secrets received by the Service Provider shall be till perpetuity. 
+
+Upon the expiry or termination of this Agreement, the Service Provider shall return all Confidential Information of Titan contained or stored in any/ all form of medium whatsoever, which is in the possession of or within the control of the Service Provider and will provide a letter issued by its authorized representatives within 2 (Two) days from the date of termination or expiry of this Agreement, stating that it does not possess any Confidential Information of Titan.
+
+
+
+INDEMNIFICATION.
+
+The Service Provider will indemnify and keep indemnified, defend and hold harmless Titan (including its respective directors, officers, employees, and agents) harmless against all claims, liabilities, losses, costs, damages, expenses, etc arising out of, directly or indirectly due to breach of any of the terms of this Agreement by the Service Provider including its representations, warranties and covenants.
+
+WARRANTY.
+
+The Service Provider covenants that all Services and Deliverables will always confirm the specifications provided in the Statement of Work.
+
+
+
+EMPLOYEES.
+
+No Employee Relationship. The Service Provider’s personnel are not and shall not be deemed to be employees of Titan. The Service Provider shall be solely responsible for the payment of all compensation to its employees, including provisions for employment taxes, workmen’s compensation and any similar taxes associated with employment of the Service Provider’s personnel. The Service Provider’s employees shall not be entitled to any benefits paid or made available by Titan to its employees.
+
+
+
+TERM AND TERMINATION.
+
+Term. The term of this Agreement will become effective on 20 DEC 2024 and will remain and continue in effect until 19 DEC 2025 unless sooner terminated, as provided hereunder.
+
+Termination. This Agreement may be terminated by either Party (the “non-breaching party”) upon written notice to the other Party if any of the following events occur by or with respect to such other Party (the “breaching party”): (i) the breaching party commits a material breach of any of its obligations hereunder and fails to cure such breach within thirty (30) days after receipt of notice of such breach or fails to reach an agreement with the non-breaching party regarding the cure thereof; or (ii) any insolvency of the breaching party, any filing of a petition in bankruptcy by or against the breaching party, any appointment of a receiver for the breaching party, or any assignment for the benefit of the breaching party’s creditors. Further, Titan may terminate this Agreement at any time by providing  sixty (60) days prior notice to the Service Provider.
+
+Obligations on Termination or Expiration of the Agreement. Upon termination or expiry of this Agreement, the Service Provider shall immediately transfer all right, interest and title in all Deliverables created  to the date of termination or expiry of this Agreement.  
+
+Survival. In the event of termination or upon expiration of this Agreement, the respective obligations of the Parties which by their nature would continue beyond the termination or expiration of this Agreement will survive termination or expiration.
+
+11. MISCELLANEOUS.
+
+11.1 Governing Law and Dispute Resolution. This Agreement shall be governed and interpreted by, and construed in accordance with the laws of India. The Parties hereby agree that the courts situated in Bangalore shall have the exclusive supervisory jurisdiction over any or all disputes arising out of or in connection with this Agreement. Where any dispute arises amongst the Parties during the subsistence of this Agreement or thereafter, in connection with the validity, interpretation, implementation or alleged breach of any provision of this Agreement or regarding a question, including a question as to whether the termination of this Agreement has been legitimate (“Dispute”), the Parties shall endeavour to settle the Dispute amicably. In the case of failure by the Parties to resolve the Dispute in the manner set out above within 30 (Thirty) days from the date when the Dispute arose, the Dispute shall be referred to a sole arbitrator to be appointed with consent of the Parties.  The place of the arbitration shall be Bangalore. The arbitration proceedings shall be governed by the Arbitration and Conciliation Act, 1996 and the rules made thereunder. The arbitration proceedings shall be conducted in the English language.
+
+
+
+11.2 Force Majeure. If the performance by either Party, of any of their obligation under this Agreement is prevented, restricted or interfered with by reason of fire or other causality or accident, or violence (not due to any act, neglect or default of the Parties), war, any law, or regulation of any governmental authority (each such event shall be called as a “Force Majeure” event), then such Party shall be excused from such performance to the extent of such prevention, restriction or interference, provided that such Party shall give prompt notice to the other Party within a period of 3 (three) days from the date of occurrence of the Force Majeure event and provide a description to the other Party of such Force Majeure event in such notice, including a description of the cause of the Force Majeure; and provided further that such Party shall use reasonable efforts to avoid or remove such cause of non-performance and shall perform its duty hereunder whenever such causes are removed.
+
+
+
+11.2 Binding Effect and Assignment. Neither Party may assign or otherwise transfer any of its rights, duties or obligations under this Agreement without the prior written consent of the other Party. This Agreement shall be binding upon and inure to the benefit of the Parties hereto and their respective successors and assignees.
+
+11.3 No Third Party Beneficiaries. This Agreement shall not confer any rights or remedies upon any person other than the Parties and their respective successors and assigns.
+
+11.4 Non Exclusive. This Agreement is non-exclusive and the Parties are not restricted from dealing with other companies or organizations not party to this Agreement with respect to providing or securing services similar to or equivalent to the services which are subject of this Agreement. 
+
+11.5 Notices. All notices, statements or other communication required or permitted to be given or made under this Agreement shall be in writing in the English language and delivered by hand or sent by registered post or an internationally recognized courier service addressed to the intended recipient at its address set forth below, or to such other address as any Party may from time to time duly notify to the other Parties in writing:
+
+
+
+To Titan:
+
+Address:
+
+Titan Company Limited,
+
+`Integrity', 193, Veerasandra, Electronics City P.O., Off Hosur Main Road, Bangalore 560100
+
+Attention:
+
+Nishith Kumar Datta
+
+	
+
+	With a copy to:  
+
+Address:
+
+Titan Company Limited,
+
+`Integrity', 193, Veerasandra, Electronics City P.O., Off Hosur Main Road, Bangalore 560100
+
+Attention:
+
+General Counsel and Company Secretary
+
+
+
+To the Service Provider:
+
+Address:
+
+Name
+
+Address :
+
+
+
+Attention:
+
+
+
+11.6 Amendments and Waivers. This Agreement may be modified only by a written amendment executed by duly authorized officers or representatives of both Parties. No waiver by either Party of any right or remedy hereunder shall be valid unless the same shall be in writing and signed by the Party giving such waiver. No waiver by either Party with respect to any default, misrepresentation, or breach of warranty or covenant hereunder shall be deemed to extend to any prior or subsequent default, misrepresentation, or breach of warranty or covenant hereunder or affect in any way any rights arising by virtue of any prior or subsequent such occurrence.
+
+11.7 Severability. If any provision in this Agreement is held by a court of competent jurisdiction to be invalid, void, or unenforceable, then such provision shall be severed from this Agreement and the remaining provisions will continue in full force.
+
+
+
+11.8 Injunctive Relief. The Service Provider agrees that in case of breach of any of the terms and conditions of this Agreement, Titan will suffer irreparable damage or injury, for which there may be no adequate remedy at law. Further, the Service Provider agrees that Titan will have a prima facie case, the balance of convenience will be in favour of Titan and Titan will have the right to seek injunctive relief against the Service Provider for any such breach, in addition to all other remedies available to it at law, in equity or otherwise.
+
+11.9 No Joint Venture or Partnership. The arrangement embodied in this Agreement does not constitute a joint venture agreement, a partnership or an agency by and between the Parties hereto. The Service Provider shall have no authority to make any commitment or enter into any agreement on behalf of Titan unless specifically authorised in writing by Titan. The Service Provider shall not perform any act nor make any representation to any third party to the effect that the Service Provider has the ability to make a commitment or enter into an agreement on behalf of Titan or otherwise bind Titan unless specifically authorised in writing by Titan.
+
+11.11 Electronic Signature.  This Agreement shall be digitally signed. Each Party agrees that the electronic signatures (E-signature), whether digital or encrypted, of the Parties included in this Agreement are intended to authenticate this Agreement and to have the same legal force and effect as manual wet signed signatures. The use of E- signature and digitally signed electronic records (including, without limitation, any contract or other record created, generated, sent, communicated, received, or stored by electronic means) shall be of the same legal effect, validity and enforceability as a manually executed signature or use of a paper-based recordkeeping system to the fullest extent permitted by applicable law.
+
+11.12 Entire Agreement. This Agreement and all Statement of Works attached hereto constitute the complete and exclusive statement of the agreement between the Parties and supersede all proposals, oral or written, and all other prior or contemporaneous communications between the Parties relating to the subject matter herein. 
+
+11.13 Headings. The section headings contained in this Agreement are inserted for convenience only and shall not affect in any way the meaning or interpretation of this Agreement.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Annexure- A 
+
+Titan IT Security Requirement
+
+
+
+1.     Service Provider shall keep in place confidentiality obligations on individuals under its control with access to Titan’s information & data; 
+
+2.   Service Provider shall conduct background check of the individuals who are providing service to Titan and shall make the record available to Titan upon request; 
+
+3.     Service Provider agrees to have implemented a secure log-on process for all information systems i.e., secure sockets layer (SSL), captcha, multi-factor authentication, complex password policy. 
+
+4.     Service Provider agrees to have relevant network security controls such as firewalls, intrusion detection systems and other relevant measures which protect network and data from breaches, intrusions, and other threats; 
+
+5.     Service Provider agrees that it has implemented and will maintain throughout the term of this Agreement and for the provisioning of the service, an information security management system (ISMS) that complies with the requirements of ISO 27001:2013 (or the latest version of ISO 27001 Standards"); 
+
+6.     Service Provider agrees that access to Titan’s data shall be restricted to authorized personnel only on a need-to-know basis, and the access controls shall be regularly reviewed and updated; 
+
+7.     All relevant legislative, statutory, and regulatory requirements should be complied with in relation to information security & data privacy laws & standards according to applicable laws. and Service Provider agrees to maintain the agreed level of information security & data protection standards as required under applicable laws.
+
+8.Service Provider shall also implement technical and organisational measures in such a manner that the collection, storage, and processing will meet the requirements of applicable laws of relevant Jurisdiction. 
+
+9.  If, Service Provider becomes aware of any threat to security of  the system and the data that may have been accessed, disclosed, or acquired without proper authorization and contrary to the terms of this Agreement, Service Provider shall alert Titan’s  business unit head of such incident within a period of twenty – four (24) hours and take such actions as may be necessary to preserve evidence and eliminate the cause of the security weakness and data breach, giving highest priority to immediately correct any security weakness and data breach and shall devote such resources as may be required to accomplish that goal; 
+
+10. Service Provider shall not keep backup copies, retain, use, or disclose the information for any purpose other than for the specific purpose of performing the services specified in the Agreement other than providing the services specified in the contract with the business, or as otherwise permitted. However, upon the expiration of the Agreement Service Provider shall initiate the process of return of data, deletion or disposal as per the instruction provided by Titan and shall provide the proof of the same. 
+
+11. Service Provider shall not sell, rent, or lease Titan’s data & information to any third party. Service Provider will not share Titan’s data with third parties, except as agreed between the Parties; 
+
+12.The data and any intellectual property rights associated with the data or the tool being used remains with Titan and its entities; 
+
+13.The Service Provider shall grant Titan the right to conduct third-party risk assessment annually to ensure that information & data that is collected, sorted, processed is in a manner consistent with Titan’s obligations under the applicable laws.
+
+14.Titan shall at all times own all right, title and interest (including all Intellectual Property Rights and other proprietary rights) over Titan’s property including but not limited to its Confidential Information, Titan Data and Titan systems. The Service Provider shall not use any PII (defined hereinafter), if any, Titan Data, Confidential Information stored in or transmitted through the Platform, for any purpose except for providing the Services to Titan. Service Provider further undertakes that the data so collected shall be anonymized and/or pseudonymized and there shall be no direct or indirect reference to Titan or its employees or the users of the platform. The Service Provider acknowledges that no license is granted, no use is permitted of Titan Data except for the purpose of the rendering of Services through the platform. The Service Provider shall also ensure the secure collection, storage and use of PII, the Titan Data in accordance with applicable laws, and shall prevent unauthorized use and disclosure of the same.
+
+15. Service Provider undertakes to Titan to promptly inform if it becomes aware of the possession or use of any Titan Data or Service Provider by any person not authorized to have such possession or use and, at the request of Titan, to provide all such assistance in relation to investigating and remedying such unauthorized possession or use.
+
+16. The Service Provider agrees that, if  it may have access to personally identifiable information relating to individual persons including without limitations employees of Titan (“PII”). The Service Provider shall under no circumstances, use for its own purpose or for any other third party, violate, or disclose to any third party the PII. Any such disclosure of PII by the Service Provider shall amount to breach of the terms of this Agreement and the provisions of law applicable in this regard and under no circumstances shall Titan be liable for any breach of confidentiality or infringement of PII, if the same is committed by the Service Provider or any employee, officer, agent or consultant of the Service Provider. Service Provider shall comply with all applicable laws (including but not limited to the Information Technology Act, 2000 and the rules made thereunder,DPDP Act and the rules made thereunder (when applicable)) relating to the collection, storage and use of PII and Titan data.
+
+17.Service Provider shall ensure that its personnel do not download, store or transmit Data and Confidential Information (including memory sticks and laptop computers), further Service Provider shall not make any further copies of any Titan data or Confidential Information including for back-up copies or other duplication. 
+
+18.Service Provider shall not transmit any of Titan Data or Confidential Information outside the Service Provider’s environment.
+
+
+
+19.The Service Provider agrees that access to Titan’s data & information shall be restricted to authorized Personnel only on a need-to-know basis, and the access controls shall be regularly reviewed and updated.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

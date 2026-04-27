@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import UploadZone from './components/UploadZone';
 import SummaryCard from './components/SummaryCard';
 import KeyClauseList from './components/KeyClauseList';
@@ -11,6 +11,14 @@ import LoadingSpinner from './components/LoadingSpinner';
 const API_URL = '/api/analyze';
 const MSA_API_URL = '/api/analyze-msa';
 const TEMPLATE_API_URL = '/api/upload-template';
+
+// Module-level token store — set on login, read by authFetch
+let _token = localStorage.getItem('eula_token') || null;
+function authFetch(url, opts = {}) {
+  const headers = { ...(opts.headers || {}) };
+  if (_token) headers['Authorization'] = 'Bearer ' + _token;
+  return fetch(url, { ...opts, headers });
+}
 
 function formatDate(iso) {
   return new Date(iso).toLocaleString('en-IN', {
@@ -31,6 +39,7 @@ function AlertCircIcon() { return <svg fill="none" viewBox="0 0 24 24" stroke="c
 function CheckCircIcon() { return <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style={{width:20,height:20}}><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>; }
 function DownloadIcon()  { return <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style={{width:14,height:14}}><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>; }
 function TrashIcon()     { return <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style={{width:14,height:14}}><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>; }
+function UsersIcon()     { return <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style={{width:'100%',height:'100%'}}><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" /></svg>; }
 function DocIconLg()     { return <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style={{width:64,height:64,color:'var(--text-dim)'}}><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>; }
 function ChartIconLg()   { return <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style={{width:64,height:64,color:'var(--text-dim)'}}><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>; }
 function ClockIconLg()   { return <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" style={{width:64,height:64,color:'var(--text-dim)'}}><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>; }
@@ -102,10 +111,11 @@ const NAV_MAIN = [
   {id:'history',   label:'History',        icon:<ClockIcon/>,    badge:true},
 ];
 const NAV_SYSTEM = [
+  {id:'users',     label:'Users',          icon:<UsersIcon/>,    badge:false},
   {id:'settings',  label:'Settings',       icon:<GearIcon/>,     badge:false},
 ];
 
-function Sidebar({ view, setView, historyCount, theme, setTheme }) {
+function Sidebar({ view, setView, historyCount, theme, setTheme, currentUser, onLogout }) {
   return (
     <aside style={{width:260,minHeight:'100vh',background:'var(--bg-base)',borderRight:'1px solid var(--border)',display:'flex',flexDirection:'column',flexShrink:0,position:'relative'}}>
       <div style={{padding:'20px 20px 16px'}}>
@@ -139,6 +149,17 @@ function Sidebar({ view, setView, historyCount, theme, setTheme }) {
             <div style={{position:'absolute',top:3,left:theme==='navy'?3:19,width:16,height:16,borderRadius:'50%',background:theme==='navy'?'var(--teal)':'#009688',transition:'left 0.25s',boxShadow:'0 1px 4px rgba(0,0,0,0.3)'}}/>
           </button>
         </div>
+        {currentUser&&(
+          <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:8}}>
+            <div style={{minWidth:0}}>
+              <div style={{fontSize:12,fontWeight:600,color:'var(--text-primary)',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{currentUser.name}</div>
+              <div style={{fontSize:10,color:'var(--text-muted)',overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{currentUser.email}</div>
+            </div>
+            <button onClick={onLogout} title="Sign out" style={{background:'none',border:'1px solid var(--border)',borderRadius:6,padding:'4px 8px',cursor:'pointer',color:'var(--text-dim)',fontSize:10,flexShrink:0,marginLeft:6}} onMouseEnter={e=>e.currentTarget.style.color='#EF4444'} onMouseLeave={e=>e.currentTarget.style.color='var(--text-dim)'}>
+              Sign out
+            </button>
+          </div>
+        )}
         <div style={{fontSize:10,fontStyle:'italic',color:'var(--text-dim)',lineHeight:1.5}}>AI-powered analysis. Always review with legal counsel.</div>
       </div>
     </aside>
@@ -146,7 +167,7 @@ function Sidebar({ view, setView, historyCount, theme, setTheme }) {
 }
 
 // --- Header ------------------------------------------------------------------
-const PAGE_TITLES = {analyze:'Analyze EULA',msa:'MSA Review',dashboard:'Risk Dashboard',history:'History',settings:'Settings'};
+const PAGE_TITLES = {analyze:'Analyze EULA',msa:'MSA Review',dashboard:'Risk Dashboard',history:'History',settings:'Settings',users:'User Management'};
 
 function Header({ view }) {
   return (
@@ -283,7 +304,7 @@ function AnalyzeView({ onNewResult, initialResult }) {
     setLoading(true);setError('');setResult(null);setCurrentFile(file);
     const fd=new FormData();fd.append('eulaFile',file);
     try{
-      const r=await fetch(API_URL,{method:'POST',body:fd});
+      const r=await authFetch(API_URL,{method:'POST',body:fd});
       const d=await r.json();
       if(!r.ok) throw new Error(d.error||'Server error: '+r.status);
       setResult(d);onNewResult(d);
@@ -296,7 +317,7 @@ function AnalyzeView({ onNewResult, initialResult }) {
     setPdfLoading(true);setError('');
     const fd=new FormData();fd.append('eulaFile',currentFile);fd.append('company','Titan Company Ltd');fd.append('accent','#00C9B1');
     try{
-      const r=await fetch('/api/generate-pdf',{method:'POST',body:fd});
+      const r=await authFetch('/api/generate-pdf',{method:'POST',body:fd});
       if(!r.ok){const d=await r.json();throw new Error(d.error||'PDF failed.');}
       const blob=await r.blob();const url=URL.createObjectURL(blob);
       const a=document.createElement('a');a.href=url;a.download='EULA_Executive_OnePager.pdf';
@@ -309,7 +330,7 @@ function AnalyzeView({ onNewResult, initialResult }) {
     if(!result) return;
     setFullPdfLoading(true);setError('');
     try{
-      const r=await fetch('/api/eula-full-report',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(result)});
+      const r=await authFetch('/api/eula-full-report',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(result)});
       if(!r.ok){const d=await r.json();throw new Error(d.error||'PDF failed.');}
       const blob=await r.blob();const url=URL.createObjectURL(blob);
       const safe=(result.softwareName||'EULA').replace(/[^a-zA-Z0-9 _-]/g,'').replace(/\s+/g,'_');
@@ -500,7 +521,7 @@ function EulaHistoryCard({ h, onView, onDelete }) {
   const handleOnePager=async()=>{
     setLoading(true);setErr('');
     try{
-      const r=await fetch('/api/eula-report-from-json',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(h.result)});
+      const r=await authFetch('/api/eula-report-from-json',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(h.result)});
       if(!r.ok){const d=await r.json();throw new Error(d.error||'PDF failed.');}
       const blob=await r.blob();const url=URL.createObjectURL(blob);
       const a=document.createElement('a');a.href=url;a.download=safe+'_Executive_OnePager.pdf';
@@ -512,7 +533,7 @@ function EulaHistoryCard({ h, onView, onDelete }) {
   const handleFullReport=async()=>{
     setFullLoading(true);setErr('');
     try{
-      const r=await fetch('/api/eula-full-report',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(h.result)});
+      const r=await authFetch('/api/eula-full-report',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(h.result)});
       if(!r.ok){const d=await r.json();throw new Error(d.error||'PDF failed.');}
       const blob=await r.blob();const url=URL.createObjectURL(blob);
       const a=document.createElement('a');a.href=url;a.download=safe+'_Full_Report.pdf';
@@ -564,7 +585,7 @@ function HistoryView({ eulaHistory, msaHistory, onViewEula, onViewMsa, onClearEu
   const [search,setSearch]=useState('');
 
   const handleDeleteEula=async(id)=>{
-    await fetch('/api/history/eula/'+id,{method:'DELETE'});
+    await authFetch('/api/history/eula/'+id,{method:'DELETE'});
     onClearEula(id);
   };
 
@@ -622,7 +643,7 @@ function SettingsView({ history }) {
   const [copied,setCopied]=useState(false);
 
   React.useEffect(()=>{
-    fetch('/api/analyze-msa/template-status').then(r=>r.json()).then(d=>setTemplateStatus(d.templateLoaded)).catch(()=>setTemplateStatus(false));
+    authFetch('/api/analyze-msa/template-status').then(r=>r.json()).then(d=>setTemplateStatus(d.templateLoaded)).catch(()=>setTemplateStatus(false));
   },[]);
 
   const handleTemplateUpload=async(e)=>{
@@ -630,7 +651,7 @@ function SettingsView({ history }) {
     setUploading(true);setTemplateMsg('');
     const fd=new FormData();fd.append('templateFile',file);
     try{
-      const r=await fetch(TEMPLATE_API_URL,{method:'POST',body:fd});
+      const r=await authFetch(TEMPLATE_API_URL,{method:'POST',body:fd});
       const d=await r.json();if(!r.ok) throw new Error(d.error);
       setTemplateStatus(true);setTemplateMsg('Template uploaded ('+(d.characters?.toLocaleString())+' characters extracted).');
     }catch(err){setTemplateMsg('Upload failed: '+err.message);}
@@ -639,7 +660,7 @@ function SettingsView({ history }) {
 
   const handleTemplateDelete=async()=>{
     if(!window.confirm('Remove stored Titan MSA template?')) return;
-    await fetch(TEMPLATE_API_URL,{method:'DELETE'});
+    await authFetch(TEMPLATE_API_URL,{method:'DELETE'});
     setTemplateStatus(false);setTemplateMsg('Template removed.');
   };
 
@@ -733,7 +754,7 @@ function MSAReviewView({ onNewResult, initialResult, onClearInitial }) {
   const [dragOver,setDragOver]=useState(false);
 
   React.useEffect(()=>{
-    fetch('/api/analyze-msa/template-status').then(r=>r.json()).then(d=>setTemplateLoaded(d.templateLoaded)).catch(()=>setTemplateLoaded(false));
+    authFetch('/api/analyze-msa/template-status').then(r=>r.json()).then(d=>setTemplateLoaded(d.templateLoaded)).catch(()=>setTemplateLoaded(false));
   },[]);
 
   const handleDrop=(e)=>{e.preventDefault();setDragOver(false);const f=e.dataTransfer?.files?.[0]||e.target.files?.[0];if(f) setFile(f);};
@@ -742,7 +763,7 @@ function MSAReviewView({ onNewResult, initialResult, onClearInitial }) {
     setLoading(true);setError('');setResult(null);setPdfError('');
     const fd=new FormData();fd.append('msaFile',file);
     try{
-      const r=await fetch(MSA_API_URL,{method:'POST',body:fd});
+      const r=await authFetch(MSA_API_URL,{method:'POST',body:fd});
       const d=await r.json();if(!r.ok) throw new Error(d.error||'Server error '+r.status);
       setResult(d);if(onNewResult) onNewResult(d);
     }catch(err){setError(err.message||'Analysis failed.');}
@@ -753,7 +774,7 @@ function MSAReviewView({ onNewResult, initialResult, onClearInitial }) {
     if(!result) return;
     setPdfLoading(true);setPdfError('');
     try{
-      const r=await fetch('/api/msa-report-pdf',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(result)});
+      const r=await authFetch('/api/msa-report-pdf',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(result)});
       if(!r.ok){const d=await r.json();throw new Error(d.error||'PDF failed.');}
       const blob=await r.blob();const url=URL.createObjectURL(blob);
       const a=document.createElement('a');a.href=url;
@@ -941,12 +962,170 @@ function MSAReviewView({ onNewResult, initialResult, onClearInitial }) {
   );
 }
 
+// --- Login Screen ------------------------------------------------------------
+function LoginScreen({ onLogin, theme, setTheme, message }) {
+  const [email,setEmail]=useState('');
+  const [password,setPassword]=useState('');
+  const [showPw,setShowPw]=useState(false);
+  const [loading,setLoading]=useState(false);
+  const [error,setError]=useState('');
+  const handleSubmit=async(e)=>{
+    e.preventDefault();
+    setError('');setLoading(true);
+    try{
+      const r=await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password})});
+      const d=await r.json();
+      if(!r.ok){setError(d.error||'Login failed.');setLoading(false);return;}
+      _token=d.token;
+      localStorage.setItem('eula_token',d.token);
+      onLogin(d.user,d.token);
+    }catch{setError('Network error. Please try again.');setLoading(false);}
+  };
+  return (
+    <div style={{minHeight:'100vh',background:'var(--bg-base)',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',padding:24}}>
+      <div style={{width:'100%',maxWidth:400}}>
+        <div style={{display:'flex',flexDirection:'column',alignItems:'center',marginBottom:32,gap:10}}>
+          <TitanStar size={52}/>
+          <div style={{fontFamily:'Syne,sans-serif',fontSize:24,fontWeight:800,color:'var(--text-primary)',letterSpacing:'1.5px'}}>EULA Scout</div>
+          <div style={{fontSize:11,textTransform:'uppercase',letterSpacing:'3px',color:'var(--text-muted)'}}>Procurement AI · Titan</div>
+        </div>
+        <form onSubmit={handleSubmit} style={{background:'var(--bg-surface)',border:'1px solid var(--border)',borderRadius:16,padding:32,boxShadow:'var(--shadow-card)'}}>
+          <div style={{marginBottom:18}}>
+            <label style={{display:'block',fontSize:11,fontWeight:600,color:'var(--text-muted)',textTransform:'uppercase',letterSpacing:'1px',marginBottom:6}}>Email</label>
+            <input type="email" value={email} onChange={e=>setEmail(e.target.value)} required autoComplete="username"
+              style={{width:'100%',boxSizing:'border-box',background:'var(--bg-elevated)',border:'1px solid var(--border-accent)',borderRadius:8,padding:'10px 14px',fontSize:14,color:'var(--text-primary)',outline:'none'}}/>
+          </div>
+          <div style={{marginBottom:24}}>
+            <label style={{display:'block',fontSize:11,fontWeight:600,color:'var(--text-muted)',textTransform:'uppercase',letterSpacing:'1px',marginBottom:6}}>Password</label>
+            <div style={{position:'relative'}}>
+              <input type={showPw?'text':'password'} value={password} onChange={e=>setPassword(e.target.value)} required autoComplete="current-password"
+                style={{width:'100%',boxSizing:'border-box',background:'var(--bg-elevated)',border:'1px solid var(--border-accent)',borderRadius:8,padding:'10px 40px 10px 14px',fontSize:14,color:'var(--text-primary)',outline:'none'}}/>
+              <button type="button" onClick={()=>setShowPw(s=>!s)} style={{position:'absolute',right:10,top:'50%',transform:'translateY(-50%)',background:'none',border:'none',cursor:'pointer',color:'var(--text-muted)',padding:2}}>
+                {showPw?<svg width={16} height={16} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"/></svg>:<svg width={16} height={16} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>}
+              </button>
+            </div>
+          </div>
+          {message&&<div style={{marginBottom:16,padding:'10px 14px',background:'rgba(0,201,177,0.08)',border:'1px solid var(--border-accent)',borderRadius:8,fontSize:13,color:'var(--teal)'}}>{message}</div>}
+          {error&&<div style={{marginBottom:16,padding:'10px 14px',background:'rgba(239,68,68,0.1)',border:'1px solid rgba(239,68,68,0.3)',borderRadius:8,fontSize:13,color:'#EF4444'}}>{error}</div>}
+          <button type="submit" disabled={loading} className="btn-primary" style={{width:'100%'}}>
+            {loading?'Signing in…':'Sign In'}
+          </button>
+        </form>
+        <div style={{marginTop:16,textAlign:'center',fontSize:11,color:'var(--text-dim)'}}>
+          <button onClick={()=>setTheme(theme==='navy'?'light':'navy')} style={{background:'none',border:'none',cursor:'pointer',color:'var(--text-dim)',fontSize:11,textDecoration:'underline'}}>Switch theme</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// --- Users View --------------------------------------------------------------
+function UsersView() {
+  const [users,setUsers]=useState([]);
+  const [loading,setLoading]=useState(true);
+  const [showForm,setShowForm]=useState(false);
+  const [formData,setFormData]=useState({name:'',email:'',password:'',confirm:''});
+  const [formError,setFormError]=useState('');
+  const [formLoading,setFormLoading]=useState(false);
+  const [actionMsg,setActionMsg]=useState('');
+
+  const load=useCallback(async()=>{
+    setLoading(true);
+    try{ const r=await authFetch('/api/users'); if(r.ok) setUsers(await r.json()); }
+    catch{} finally{setLoading(false);}
+  },[]);
+  useEffect(()=>{load();},[load]);
+
+  const handleAdd=async(e)=>{
+    e.preventDefault();setFormError('');
+    if(formData.password!==formData.confirm){setFormError('Passwords do not match.');return;}
+    if(formData.password.length<8){setFormError('Password must be at least 8 characters.');return;}
+    setFormLoading(true);
+    try{
+      const r=await authFetch('/api/users',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:formData.name,email:formData.email,password:formData.password})});
+      const d=await r.json();
+      if(!r.ok){setFormError(d.error||'Failed to add user.');setFormLoading(false);return;}
+      setShowForm(false);setFormData({name:'',email:'',password:'',confirm:''});setActionMsg('User added successfully.');
+      load();
+    }catch{setFormError('Network error.');} finally{setFormLoading(false);}
+  };
+
+  const toggleActive=async(id,active)=>{
+    const endpoint=active?'/api/users/'+id+'/deactivate':'/api/users/'+id+'/activate';
+    const r=await authFetch(endpoint,{method:'PATCH'});
+    if(r.ok){setActionMsg(active?'User deactivated.':'User activated.');load();}
+    else{const d=await r.json();setActionMsg(d.error||'Action failed.');}
+  };
+
+  const inputStyle={width:'100%',boxSizing:'border-box',background:'var(--bg-elevated)',border:'1px solid var(--border-accent)',borderRadius:8,padding:'9px 12px',fontSize:13,color:'var(--text-primary)',outline:'none'};
+  const labelStyle={display:'block',fontSize:11,fontWeight:600,color:'var(--text-muted)',textTransform:'uppercase',letterSpacing:'1px',marginBottom:5};
+
+  return (
+    <div>
+      <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:24}}>
+        <div style={{fontFamily:'Syne,sans-serif',fontSize:22,fontWeight:800,color:'var(--text-primary)'}}>User Management</div>
+        <button onClick={()=>{setShowForm(s=>!s);setFormError('');}} className="btn-primary" style={{fontSize:13}}>
+          {showForm?'✕ Cancel':'+ Add User'}
+        </button>
+      </div>
+      {actionMsg&&<div style={{marginBottom:16,padding:'10px 14px',background:'rgba(0,201,177,0.08)',border:'1px solid var(--border-accent)',borderRadius:8,fontSize:13,color:'var(--teal)',display:'flex',justifyContent:'space-between'}}><span>{actionMsg}</span><button onClick={()=>setActionMsg('')} style={{background:'none',border:'none',cursor:'pointer',color:'var(--text-dim)',fontSize:14}}>✕</button></div>}
+      {showForm&&(
+        <form onSubmit={handleAdd} style={{background:'var(--bg-surface)',border:'1px solid var(--border-accent)',borderRadius:12,padding:24,marginBottom:24}}>
+          <div style={{fontFamily:'Syne,sans-serif',fontSize:16,fontWeight:700,color:'var(--text-primary)',marginBottom:18}}>New User</div>
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:16,marginBottom:16}}>
+            <div><label style={labelStyle}>Full Name</label><input type="text" value={formData.name} onChange={e=>setFormData(d=>({...d,name:e.target.value}))} required style={inputStyle}/></div>
+            <div><label style={labelStyle}>Email</label><input type="email" value={formData.email} onChange={e=>setFormData(d=>({...d,email:e.target.value}))} required style={inputStyle}/></div>
+            <div><label style={labelStyle}>Password</label><input type="password" value={formData.password} onChange={e=>setFormData(d=>({...d,password:e.target.value}))} required minLength={8} style={inputStyle}/></div>
+            <div><label style={labelStyle}>Confirm Password</label><input type="password" value={formData.confirm} onChange={e=>setFormData(d=>({...d,confirm:e.target.value}))} required style={inputStyle}/></div>
+          </div>
+          {formError&&<div style={{marginBottom:14,padding:'8px 12px',background:'rgba(239,68,68,0.1)',border:'1px solid rgba(239,68,68,0.3)',borderRadius:8,fontSize:12,color:'#EF4444'}}>{formError}</div>}
+          <button type="submit" disabled={formLoading} className="btn-primary">{formLoading?'Adding…':'Add User'}</button>
+        </form>
+      )}
+      <div className="card" style={{padding:0,overflow:'hidden'}}>
+        {loading?(<div style={{padding:40,textAlign:'center',color:'var(--text-muted)',fontSize:14}}>Loading users…</div>):(
+          <table style={{width:'100%',borderCollapse:'collapse'}}>
+            <thead>
+              <tr style={{borderBottom:'1px solid var(--border)',background:'var(--bg-elevated)'}}>
+                {['Name','Email','Status','Joined','Last Login','Added By','Actions'].map(h=>(
+                  <th key={h} style={{padding:'10px 16px',textAlign:'left',fontSize:11,fontWeight:600,color:'var(--text-muted)',textTransform:'uppercase',letterSpacing:'1px'}}>{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {users.map((u,i)=>(
+                <tr key={u.id} style={{borderBottom:'1px solid var(--border)',background:i%2===0?'transparent':'rgba(255,255,255,0.015)'}}>
+                  <td style={{padding:'12px 16px',fontSize:13,fontWeight:600,color:'var(--text-primary)'}}>{u.name}</td>
+                  <td style={{padding:'12px 16px',fontSize:13,color:'var(--text-muted)'}}>{u.email}</td>
+                  <td style={{padding:'12px 16px'}}><span style={{fontSize:11,fontWeight:600,padding:'3px 10px',borderRadius:100,background:u.is_active?'rgba(34,197,94,0.12)':'rgba(239,68,68,0.1)',color:u.is_active?'#22C55E':'#EF4444',border:`1px solid ${u.is_active?'rgba(34,197,94,0.3)':'rgba(239,68,68,0.3)'}`}}>{u.is_active?'Active':'Inactive'}</span></td>
+                  <td style={{padding:'12px 16px',fontSize:12,color:'var(--text-muted)'}}>{u.created_at?new Date(u.created_at).toLocaleDateString():'-'}</td>
+                  <td style={{padding:'12px 16px',fontSize:12,color:'var(--text-muted)'}}>{u.last_login?new Date(u.last_login).toLocaleDateString():'-'}</td>
+                  <td style={{padding:'12px 16px',fontSize:12,color:'var(--text-muted)'}}>{u.created_by_name||'-'}</td>
+                  <td style={{padding:'12px 16px'}}>
+                    <button onClick={()=>toggleActive(u.id,u.is_active)} style={{fontSize:11,padding:'4px 12px',borderRadius:6,border:'1px solid var(--border-accent)',background:'none',cursor:'pointer',color:u.is_active?'#EF4444':'var(--teal)'}}>
+                      {u.is_active?'Deactivate':'Activate'}
+                    </button>
+                  </td>
+                </tr>
+              ))}
+              {users.length===0&&<tr><td colSpan={7} style={{padding:32,textAlign:'center',fontSize:14,color:'var(--text-muted)'}}>No users found.</td></tr>}
+            </tbody>
+          </table>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // --- App Root ----------------------------------------------------------------
 export default function App() {
   const [view,setView]=useState('analyze');
   const [history,setHistory]=useState([]);
   const [msaHistory,setMsaHistory]=useState([]);
   const [theme,setThemeState]=useState(()=>localStorage.getItem('eula_theme')||'navy');
+  const [currentUser,setCurrentUser]=useState(null);
+  const [authChecked,setAuthChecked]=useState(false);
+
   const setTheme=(key)=>{
     setThemeState(key);
     const vars=THEMES[key]?.vars||THEMES.navy.vars;
@@ -958,18 +1137,62 @@ export default function App() {
     const vars=THEMES[saved]?.vars||THEMES.navy.vars;
     Object.entries(vars).forEach(([k,v])=>document.documentElement.style.setProperty(k,v));
   },[]);
+
+  // On mount: verify stored token
+  useEffect(()=>{
+    const token=localStorage.getItem('eula_token');
+    if(!token){setAuthChecked(true);return;}
+    _token=token;
+    fetch('/api/auth/me',{headers:{Authorization:'Bearer '+token}})
+      .then(r=>r.ok?r.json():Promise.reject())
+      .then(d=>{setCurrentUser(d.user);setAuthChecked(true);})
+      .catch(()=>{_token=null;localStorage.removeItem('eula_token');setAuthChecked(true);});
+  },[]);
+
+  const handleLogin=(user,token)=>{_token=token;setCurrentUser(user);};
+  const handleLogout=useCallback(async(reason)=>{
+    try{ await authFetch('/api/auth/logout',{method:'POST'}); }catch{}
+    _token=null;localStorage.removeItem('eula_token');
+    setCurrentUser(null);setHistory([]);setMsaHistory([]);
+    if(reason==='timeout') setSessionMsg('You were signed out due to 30 minutes of inactivity.');
+  },[]);
+
+  // Idle session timeout — 30 minutes, warn at 28 minutes
+  const IDLE_TIMEOUT=30*60*1000;
+  const WARN_BEFORE=2*60*1000;
+  const [idleWarning,setIdleWarning]=useState(false);
+  const [sessionMsg,setSessionMsg]=useState('');
+  const idleTimer=useRef(null);
+  const warnTimer=useRef(null);
+  const resetIdle=useCallback(()=>{
+    setIdleWarning(false);
+    clearTimeout(idleTimer.current);
+    clearTimeout(warnTimer.current);
+    if(!currentUser) return;
+    warnTimer.current=setTimeout(()=>setIdleWarning(true), IDLE_TIMEOUT-WARN_BEFORE);
+    idleTimer.current=setTimeout(()=>handleLogout('timeout'), IDLE_TIMEOUT);
+  },[currentUser,handleLogout]);
+
+  useEffect(()=>{
+    if(!currentUser){clearTimeout(idleTimer.current);clearTimeout(warnTimer.current);return;}
+    const events=['mousemove','keydown','click','scroll','touchstart'];
+    events.forEach(e=>window.addEventListener(e,resetIdle,{passive:true}));
+    resetIdle();
+    return()=>{events.forEach(e=>window.removeEventListener(e,resetIdle));clearTimeout(idleTimer.current);clearTimeout(warnTimer.current);};
+  },[currentUser,resetIdle]);
+
   const [historyResult,setHistoryResult]=useState(null);
   const [msaHistoryResult,setMsaHistoryResult]=useState(null);
 
   const fetchHistory=useCallback(async()=>{
     try{
-      const [er,mr]=await Promise.all([fetch('/api/history/eula'),fetch('/api/history/msa')]);
+      const [er,mr]=await Promise.all([authFetch('/api/history/eula'),authFetch('/api/history/msa')]);
       if(er.ok) setHistory(await er.json());
       if(mr.ok) setMsaHistory(await mr.json());
     }catch{}
   },[]);
 
-  useEffect(()=>{fetchHistory();},[fetchHistory]);
+  useEffect(()=>{if(currentUser) fetchHistory();},[fetchHistory,currentUser]);
 
   const handleNewResult=()=>fetchHistory();
   const handleNewMsaResult=()=>fetchHistory();
@@ -977,27 +1200,46 @@ export default function App() {
   const handleViewMsa=(result)=>{setMsaHistoryResult(result);setHistoryResult(null);setView('msa');};
   const handleClearEula=async(id)=>{
     if(id){setHistory(h=>h.filter(x=>x.id!==id));}
-    else{if(!window.confirm('Clear all EULA history?')) return;await fetch('/api/history/eula',{method:'DELETE'});setHistory([]);}
+    else{if(!window.confirm('Clear all EULA history?')) return;await authFetch('/api/history/eula',{method:'DELETE'});setHistory([]);}
   };
   const handleClearMsa=async()=>{
     if(!window.confirm('Clear all MSA history?')) return;
-    await fetch('/api/history/msa',{method:'DELETE'});setMsaHistory([]);
+    await authFetch('/api/history/msa',{method:'DELETE'});setMsaHistory([]);
   };
   const handleNavChange=(id)=>{setView(id);setHistoryResult(null);setMsaHistoryResult(null);};
 
+  if(!authChecked) return (
+    <div style={{display:'flex',alignItems:'center',justifyContent:'center',minHeight:'100vh',background:'var(--bg-base)'}}>
+      <LoadingSpinner size="lg"/>
+    </div>
+  );
+  if(!currentUser) return <LoginScreen onLogin={handleLogin} theme={theme} setTheme={setTheme} message={sessionMsg}/>;
+
   return (
     <div style={{display:'flex',minHeight:'100vh',background:'var(--bg-base)'}}>
-      <Sidebar view={view} setView={handleNavChange} historyCount={history.length+msaHistory.length} theme={theme} setTheme={setTheme}/>
+      {idleWarning&&(
+        <div style={{position:'fixed',inset:0,background:'rgba(0,0,0,0.6)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:9999}}>
+          <div style={{background:'var(--bg-surface)',border:'1px solid var(--border-accent)',borderRadius:16,padding:32,maxWidth:380,width:'100%',textAlign:'center',boxShadow:'var(--shadow-card)'}}>
+            <div style={{fontSize:32,marginBottom:12}}>⏱</div>
+            <div style={{fontFamily:'Syne,sans-serif',fontSize:18,fontWeight:700,color:'var(--text-primary)',marginBottom:8}}>Session Expiring Soon</div>
+            <div style={{fontSize:13,color:'var(--text-muted)',lineHeight:1.6,marginBottom:24}}>You've been inactive for 28 minutes. You'll be signed out in <strong style={{color:'var(--teal)'}}>2 minutes</strong> unless you continue.</div>
+            <button onClick={resetIdle} className="btn-primary" style={{width:'100%',marginBottom:10}}>Stay Signed In</button>
+            <button onClick={()=>handleLogout()} style={{width:'100%',background:'none',border:'1px solid var(--border)',borderRadius:8,padding:'9px 0',fontSize:13,color:'var(--text-muted)',cursor:'pointer'}}>Sign Out Now</button>
+          </div>
+        </div>
+      )}
+      <Sidebar view={view} setView={handleNavChange} historyCount={history.length+msaHistory.length} theme={theme} setTheme={setTheme} currentUser={currentUser} onLogout={handleLogout}/>
       <div style={{flex:1,display:'flex',flexDirection:'column',overflow:'auto',minWidth:0}}>
         <Header view={view}/>
         <div style={{padding:'28px 32px',maxWidth:960,width:'100%',margin:'0 auto',flex:1}}>
           {view==='analyze'&&(historyResult?<ResultsDashboard result={historyResult} onReset={()=>setHistoryResult(null)} onDownloadFull={async()=>{
-            try{const r=await fetch('/api/eula-full-report',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(historyResult)});if(!r.ok)return;const blob=await r.blob();const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=(historyResult.softwareName||'EULA').replace(/[^a-zA-Z0-9 _-]/g,'').replace(/\s+/g,'_')+'_Full_Report.pdf';document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);}catch{}
+            try{const r=await authFetch('/api/eula-full-report',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(historyResult)});if(!r.ok)return;const blob=await r.blob();const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=(historyResult.softwareName||'EULA').replace(/[^a-zA-Z0-9 _-]/g,'').replace(/\s+/g,'_')+'_Full_Report.pdf';document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);}catch{}
           }}/>:<AnalyzeView onNewResult={handleNewResult}/>)}
           {view==='msa'&&(msaHistoryResult?<MSAReviewView initialResult={msaHistoryResult} onClearInitial={()=>setMsaHistoryResult(null)} onNewResult={handleNewMsaResult}/>:<MSAReviewView onNewResult={handleNewMsaResult}/>)}
           {view==='dashboard'&&<RiskDashboardView history={history}/>}
           {view==='history'&&<HistoryView eulaHistory={history} msaHistory={msaHistory} onViewEula={handleViewEula} onViewMsa={handleViewMsa} onClearEula={handleClearEula} onClearMsa={handleClearMsa}/>}
           {view==='settings'&&<SettingsView history={history}/>}
+          {view==='users'&&<UsersView/>}
         </div>
       </div>
     </div>

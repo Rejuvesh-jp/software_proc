@@ -1,6 +1,9 @@
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
+const { requireAuth } = require('./middleware/auth');
+const authRouter = require('./routes/auth');
+const usersRouter = require('./routes/users');
 const analyzeRouter = require('./routes/analyze');
 const generatePdfRouter = require('./routes/generatePdf');
 const analyzeMSARouter = require('./routes/analyzeMSA');
@@ -16,15 +19,19 @@ const FRONTEND_DIST = path.join(__dirname, '..', 'frontend', 'dist');
 
 app.use(express.json());
 
-// API routes
-app.use('/api/analyze', analyzeRouter);
-app.use('/api/generate-pdf', generatePdfRouter);
-app.use('/api/analyze-msa', analyzeMSARouter);
-app.use('/api/upload-template', uploadTemplateRouter);
-app.use('/api/msa-report-pdf', msaReportPdfRouter);
-app.use('/api/eula-report-from-json', eulaReportFromJsonRouter);
-app.use('/api/eula-full-report', eulaFullReportRouter);
-app.use('/api/history', historyRouter);
+// Public routes (no auth)
+app.use('/api/auth', authRouter);
+
+// Protected API routes
+app.use('/api/users', usersRouter);
+app.use('/api/analyze', requireAuth, analyzeRouter);
+app.use('/api/generate-pdf', requireAuth, generatePdfRouter);
+app.use('/api/analyze-msa', requireAuth, analyzeMSARouter);
+app.use('/api/upload-template', requireAuth, uploadTemplateRouter);
+app.use('/api/msa-report-pdf', requireAuth, msaReportPdfRouter);
+app.use('/api/eula-report-from-json', requireAuth, eulaReportFromJsonRouter);
+app.use('/api/eula-full-report', requireAuth, eulaFullReportRouter);
+app.use('/api/history', requireAuth, historyRouter);
 
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });

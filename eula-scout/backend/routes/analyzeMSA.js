@@ -1,10 +1,9 @@
 const express = require('express');
 const multer = require('multer');
 const https = require('https');
-const fs = require('fs');
-const path = require('path');
 const { URL } = require('url');
 const { parsePdf } = require('../utils/pdfParser');
+const db = require('../db');
 
 const router = express.Router();
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
@@ -17,9 +16,6 @@ const upload = multer({
     file.mimetype === 'application/pdf' ? cb(null, true) : cb(new Error('Only PDF files are accepted.'));
   },
 });
-
-// Path where the stored Titan MSA template text is cached
-const TITAN_TEMPLATE_PATH = path.join(__dirname, '..', 'uploads', 'titan_msa_template.txt');
 
 function callGateway(messages) {
   return new Promise((resolve, reject) => {
@@ -111,10 +107,13 @@ Return ONLY valid JSON in this exact structure — no markdown, no explanation o
 }`;
 
 // ── GET /api/analyze-msa/template-status ─────────────────────────────────────
-// Returns whether a Titan MSA template has been uploaded
-router.get('/template-status', (req, res) => {
-  const exists = fs.existsSync(TITAN_TEMPLATE_PATH);
-  res.json({ templateLoaded: exists });
+router.get('/template-status', async (req, res) => {
+  try {
+    const { rows } = await db.query('SELECT id FROM msa_template ORDER BY uploaded_at DESC LIMIT 1');
+    res.json({ templateLoaded: rows.length > 0 });
+  } catch {
+    res.json({ templateLoaded: false });
+  }
 });
 
 // ── POST /api/analyze-msa ─────────────────────────────────────────────────────
@@ -133,13 +132,19 @@ router.post(
   async (req, res) => {
     if (!req.file) return res.status(400).json({ error: 'No file uploaded. Please attach a vendor MSA PDF.' });
 
-    // Load Titan template
-    if (!fs.existsSync(TITAN_TEMPLATE_PATH)) {
-      return res.status(428).json({
-        error: 'Titan MSA template not uploaded yet. Go to Settings → MSA Template and upload your Titan master template first.',
-      });
+    // Load Titan template from DB
+    let titanText;
+    try {
+      const { rows } = await db.query('SELECT content FROM msa_template ORDER BY uploaded_at DESC LIMIT 1');
+      if (rows.length === 0) {
+        return res.status(428).json({
+          error: 'Titan MSA template not uploaded yet. Go to Settings → MSA Template and upload your Titan master template first.',
+        });
+      }
+      titanText = rows[0].content;
+    } catch (dbErr) {
+      return res.status(500).json({ error: 'Could not load Titan template from database.' });
     }
-    const titanText = fs.readFileSync(TITAN_TEMPLATE_PATH, 'utf-8');
 
     // Parse vendor MSA
     let vendorText;
@@ -179,6 +184,22 @@ router.post(
         result = JSON.parse(cleaned);
       } catch {
         throw new Error('AI returned malformed JSON. Please try again.');
+      }
+
+      // Save to PostgreSQL
+      try {
+        await db.query(
+          `INSERT INTO msa_reviews (msa_title, vendor_name, overall_risk, result)
+           VALUES ($1, $2, $3, $4)`,
+          [
+            result.msaTitle || null,
+            result.vendorName || null,
+            result.overallRisk || null,
+            JSON.stringify(result),
+          ]
+        );
+      } catch (dbErr) {
+        console.error('[analyzeMSA] DB save error:', dbErr.message);
       }
 
       return res.json(result);

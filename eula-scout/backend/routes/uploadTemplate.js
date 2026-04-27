@@ -1,12 +1,12 @@
 const express = require('express');
 const multer = require('multer');
-const fs = require('fs');
 const path = require('path');
 const mammoth = require('mammoth');
 const { parsePdf } = require('../utils/pdfParser');
+const db = require('../db');
 
 const router = express.Router();
-const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20 MB — Word docs can be larger
+const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20 MB
 
 const ALLOWED_MIMES = [
   'application/pdf',
@@ -26,14 +26,6 @@ const upload = multer({
     cb(new Error('Only PDF or Word (.docx) files are accepted.'));
   },
 });
-
-const UPLOADS_DIR = path.join(__dirname, '..', 'uploads');
-const TITAN_TEMPLATE_PATH = path.join(UPLOADS_DIR, 'titan_msa_template.txt');
-
-// Ensure uploads directory exists
-if (!fs.existsSync(UPLOADS_DIR)) {
-  fs.mkdirSync(UPLOADS_DIR, { recursive: true });
-}
 
 // ── POST /api/upload-template ─────────────────────────────────────────────────
 // Accepts Titan MSA template PDF, extracts text, stores as .txt for reuse
@@ -78,27 +70,32 @@ router.post(
     }
 
     try {
-      fs.writeFileSync(TITAN_TEMPLATE_PATH, text, 'utf-8');
+      // Replace any existing template (keep only one row)
+      await db.query('DELETE FROM msa_template');
+      await db.query(
+        'INSERT INTO msa_template (filename, content) VALUES ($1, $2)',
+        [req.file.originalname, text]
+      );
     } catch (e) {
-      return res.status(500).json({ error: 'Could not save template on server.', detail: e.message });
+      return res.status(500).json({ error: 'Could not save template to database.', detail: e.message });
     }
 
     res.json({
       success: true,
       message: 'Titan MSA template uploaded and stored successfully.',
-      pages: text.split('\n').length,
       characters: text.length,
     });
   }
 );
 
 // ── DELETE /api/upload-template ───────────────────────────────────────────────
-router.delete('/', (req, res) => {
-  if (fs.existsSync(TITAN_TEMPLATE_PATH)) {
-    fs.unlinkSync(TITAN_TEMPLATE_PATH);
-    return res.json({ success: true, message: 'Titan MSA template removed.' });
+router.delete('/', async (req, res) => {
+  try {
+    await db.query('DELETE FROM msa_template');
+    res.json({ success: true, message: 'Titan MSA template removed.' });
+  } catch (e) {
+    res.status(500).json({ error: 'Could not remove template.', detail: e.message });
   }
-  res.status(404).json({ error: 'No template found.' });
 });
 
 module.exports = router;

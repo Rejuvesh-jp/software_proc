@@ -3,6 +3,7 @@ const multer = require('multer');
 const https = require('https');
 const { URL } = require('url');
 const { parsePdf } = require('../utils/pdfParser');
+const db = require('../db');
 
 const router = express.Router();
 
@@ -159,6 +160,24 @@ router.post(
         analysisResult = JSON.parse(rawContent);
       } catch {
         throw new Error('AI returned malformed JSON. Please try again.');
+      }
+
+      // Save to PostgreSQL
+      try {
+        await db.query(
+          `INSERT INTO eula_analyses (software_name, vendor, eula_version, overall_risk_level, result)
+           VALUES ($1, $2, $3, $4, $5)`,
+          [
+            analysisResult.softwareName || null,
+            analysisResult.vendor || null,
+            analysisResult.eulaVersion || null,
+            analysisResult.overallRiskLevel || null,
+            JSON.stringify(analysisResult),
+          ]
+        );
+      } catch (dbErr) {
+        console.error('[analyze] DB save error:', dbErr.message);
+        // Non-fatal — still return the result to the client
       }
 
       return res.json(analysisResult);

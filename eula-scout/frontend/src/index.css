@@ -2,31 +2,133 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Keyframe animations ────────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes drawLine {
+  from { stroke-dashoffset: var(--length); }
+  to   { stroke-dashoffset: 0; }
+}
+@keyframes fillBar {
+  from { width: 0; }
+  to   { width: var(--target-width); }
+}
+@keyframes countUp {
+  from { opacity: 0; transform: scale(0.8); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes spin-teal {
+  to { transform: rotate(360deg); }
+}
+
+.animate-fade-up   { animation: fadeUp 0.5s ease both; }
+.animate-fade-in   { animation: fadeIn 0.4s ease both; }
+.animate-count-up  { animation: countUp 0.6s ease both; }
+
 @layer base {
-  body {
-    @apply bg-gray-50 text-gray-900 antialiased;
+  *, *::before, *::after {
+    box-sizing: border-box;
   }
+  body {
+    background: var(--bg-base);
+    color: var(--text-primary);
+    font-family: 'DM Sans', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  /* Focus styles */
+  *:focus-visible {
+    outline: 2px solid var(--teal);
+    outline-offset: 2px;
+  }
+  /* Custom scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg-surface); }
+  ::-webkit-scrollbar-thumb { background: var(--bg-elevated); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--teal); }
+  /* Placeholder */
+  ::placeholder { color: var(--text-dim); }
 }
 
 @layer components {
   .card {
-    @apply bg-white rounded-xl shadow-sm border border-gray-100 p-6;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+    padding: 28px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
   }
 
   .section-title {
-    @apply text-sm font-semibold uppercase tracking-wider text-gray-500 mb-3;
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    margin-bottom: 12px;
   }
 
   .prose-sm-custom {
-    @apply text-sm leading-relaxed text-gray-700;
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--text-muted);
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 48px;
+    padding: 0 24px;
+    background: linear-gradient(135deg, var(--teal), var(--teal-dark));
+    color: var(--bg-base);
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.03em;
+    border-radius: var(--radius-btn);
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .btn-primary:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,201,177,0.3);
+    filter: brightness(1.1);
+  }
+  .btn-primary:disabled {
+    background: rgba(255,255,255,0.07);
+    color: var(--text-dim);
+    cursor: not-allowed;
+  }
+
+  .risk-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    border-radius: 100px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
   }
 }
 
 @media print {
-  .no-print {
-    display: none !important;
-  }
-  body {
-    background: white !important;
-  }
+  .no-print { display: none !important; }
+  body { background: white !important; }
 }

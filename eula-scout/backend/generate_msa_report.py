@@ -72,26 +72,27 @@ def build_styles() -> dict:
         return ParagraphStyle(name, parent=base[parent], **kw)
 
     return {
-        "title":      s("rpt_title",   fontSize=20, fontName="Helvetica-Bold", textColor=C_DARK,    spaceAfter=2),
-        "subtitle":   s("rpt_sub",     fontSize=9,  fontName="Helvetica",      textColor=C_GREY_TXT, spaceAfter=3),
-        "h1":         s("rpt_h1",      fontSize=12, fontName="Helvetica-Bold", textColor=C_ACCENT,  spaceBefore=0, spaceAfter=3),
-        "h2":         s("rpt_h2",      fontSize=9,  fontName="Helvetica-Bold", textColor=C_DARK,    spaceBefore=0, spaceAfter=2),
-        "body":       s("rpt_body",    fontSize=8.5, fontName="Helvetica",     textColor=C_DARK,    leading=13),
-        "body_small": s("rpt_bs",      fontSize=7.5, fontName="Helvetica",     textColor=C_DARK,    leading=12),
-        "label":      s("rpt_lbl",     fontSize=7,  fontName="Helvetica-Bold", textColor=C_GREY_TXT),
-        "label_blue": s("rpt_lblb",    fontSize=7,  fontName="Helvetica-Bold", textColor=C_ACCENT),
-        "label_red":  s("rpt_lblr",    fontSize=7,  fontName="Helvetica-Bold", textColor=C_RED),
-        "label_grn":  s("rpt_lblg",    fontSize=7,  fontName="Helvetica-Bold", textColor=C_GREEN),
-        "label_amb":  s("rpt_lbla",    fontSize=7,  fontName="Helvetica-Bold", textColor=C_AMBER),
-        "prio_num":   s("rpt_pnum",    fontSize=9,  fontName="Helvetica-Bold", textColor=C_WHITE, alignment=TA_CENTER),
-        # Per-risk deviation header badge styles (pre-created, not dynamic)
-        "drc_high":   s("rpt_drch",    fontSize=8,  fontName="Helvetica-Bold", textColor=C_RED,   alignment=TA_RIGHT),
-        "drc_medium": s("rpt_drcm",    fontSize=8,  fontName="Helvetica-Bold", textColor=C_AMBER, alignment=TA_RIGHT),
-        "drc_low":    s("rpt_drcl",    fontSize=8,  fontName="Helvetica-Bold", textColor=C_GREEN, alignment=TA_RIGHT),
+        # leading MUST be >= fontSize to prevent paragraph height being under-reported
+        "title":      s("rpt_title",   fontSize=20, fontName="Helvetica-Bold", textColor=C_DARK,    leading=26, spaceAfter=4),
+        "subtitle":   s("rpt_sub",     fontSize=9,  fontName="Helvetica",      textColor=C_GREY_TXT, leading=14, spaceAfter=5),
+        "h1":         s("rpt_h1",      fontSize=12, fontName="Helvetica-Bold", textColor=C_ACCENT,  leading=17, spaceBefore=4, spaceAfter=3),
+        "h2":         s("rpt_h2",      fontSize=9,  fontName="Helvetica-Bold", textColor=C_DARK,    leading=13, spaceBefore=3, spaceAfter=3),
+        "body":       s("rpt_body",    fontSize=8.5, fontName="Helvetica",     textColor=C_DARK,    leading=14, spaceAfter=3),
+        "body_small": s("rpt_bs",      fontSize=7.5, fontName="Helvetica",     textColor=C_DARK,    leading=12, spaceAfter=2),
+        "label":      s("rpt_lbl",     fontSize=7,  fontName="Helvetica-Bold", textColor=C_GREY_TXT, leading=11),
+        "label_blue": s("rpt_lblb",    fontSize=7,  fontName="Helvetica-Bold", textColor=C_ACCENT,  leading=11),
+        "label_red":  s("rpt_lblr",    fontSize=7,  fontName="Helvetica-Bold", textColor=C_RED,     leading=11),
+        "label_grn":  s("rpt_lblg",    fontSize=7,  fontName="Helvetica-Bold", textColor=C_GREEN,   leading=11),
+        "label_amb":  s("rpt_lbla",    fontSize=7,  fontName="Helvetica-Bold", textColor=C_AMBER,   leading=11),
+        "prio_num":   s("rpt_pnum",    fontSize=9,  fontName="Helvetica-Bold", textColor=C_WHITE,   leading=13, alignment=TA_CENTER),
+        # Per-risk deviation header badge styles
+        "drc_high":   s("rpt_drch",    fontSize=8,  fontName="Helvetica-Bold", textColor=C_RED,   leading=12, alignment=TA_RIGHT),
+        "drc_medium": s("rpt_drcm",    fontSize=8,  fontName="Helvetica-Bold", textColor=C_AMBER, leading=12, alignment=TA_RIGHT),
+        "drc_low":    s("rpt_drcl",    fontSize=8,  fontName="Helvetica-Bold", textColor=C_GREEN, leading=12, alignment=TA_RIGHT),
         # Per-risk importance styles for missing clauses
-        "imp_high":   s("rpt_imph",    fontSize=7.5, fontName="Helvetica-Bold", textColor=C_RED),
-        "imp_medium": s("rpt_impm",    fontSize=7.5, fontName="Helvetica-Bold", textColor=C_AMBER),
-        "imp_low":    s("rpt_impl",    fontSize=7.5, fontName="Helvetica-Bold", textColor=C_GREEN),
+        "imp_high":   s("rpt_imph",    fontSize=7.5, fontName="Helvetica-Bold", textColor=C_RED,   leading=11),
+        "imp_medium": s("rpt_impm",    fontSize=7.5, fontName="Helvetica-Bold", textColor=C_AMBER, leading=11),
+        "imp_low":    s("rpt_impl",    fontSize=7.5, fontName="Helvetica-Bold", textColor=C_GREEN, leading=11),
     }
 
 
@@ -124,10 +125,12 @@ def _section_header(text: str, styles: dict, page_break: bool = False) -> list:
     items: list = []
     if page_break:
         items.append(PageBreak())
+        items.append(Spacer(1, 3 * mm))   # gap below header bar on new page
     else:
-        items.append(Spacer(1, 3 * mm))
+        items.append(Spacer(1, 5 * mm))
     items.append(Paragraph(text.upper(), styles["h1"]))
-    items.append(HRFlowable(width="100%", thickness=1.5, color=C_ACCENT, spaceAfter=3))
+    items.append(HRFlowable(width="100%", thickness=1.5, color=C_ACCENT, spaceAfter=6))
+    items.append(Spacer(1, 2 * mm))       # breathing room between rule and first content
     return items
 
 
@@ -210,16 +213,18 @@ def build_story(data: dict, styles: dict, content_w: float) -> list:
     story: list = []
 
     # ── Cover / summary block ─────────────────────────────────────────────────
-    story.append(Spacer(1, 4 * mm))
+    story.append(Spacer(1, 5 * mm))
     story.append(Paragraph(
         data.get("msaTitle") or data.get("vendorName", "Vendor MSA"),
         styles["title"],
     ))
+    story.append(Spacer(1, 3 * mm))
     story.append(Paragraph(
         f'Vendor: <b>{data.get("vendorName", "—")}</b>'
         f'  ·  Effective Date: <b>{data.get("effectiveDate", "[TBD]")}</b>',
         styles["subtitle"],
     ))
+    story.append(Spacer(1, 3 * mm))
 
     risk = data.get("overallRisk", "Medium")
     risk_col, risk_bg = _risk_colours(risk)
@@ -240,6 +245,7 @@ def build_story(data: dict, styles: dict, content_w: float) -> list:
     # ── Executive Summary ────────────────────────────────────────────────────
     story += _section_header("Executive Summary", styles, page_break=False)
     story.append(Paragraph(data.get("executiveSummary", ""), styles["body"]))
+    story.append(Spacer(1, 3 * mm))
 
     # Risk overview table
     risk_rows = []
@@ -282,8 +288,8 @@ def build_story(data: dict, styles: dict, content_w: float) -> list:
             colWidths=[8 * mm, content_w - 8 * mm],
             style=TableStyle([
                 ("BACKGROUND",   (0, 0), (0, -1), C_RED),
-                ("TOPPADDING",   (0, 0), (-1, -1), 4),
-                ("BOTTOMPADDING",(0, 0), (-1, -1), 4),
+                ("TOPPADDING",   (0, 0), (-1, -1), 5),
+                ("BOTTOMPADDING",(0, 0), (-1, -1), 5),
                 ("LEFTPADDING",  (0, 0), (0, -1), 2),
                 ("RIGHTPADDING", (0, 0), (0, -1), 2),
                 ("LEFTPADDING",  (1, 0), (1, -1), 6),
@@ -291,6 +297,7 @@ def build_story(data: dict, styles: dict, content_w: float) -> list:
                 ("LINEBELOW",    (0, 0), (-1, -2), 0.3, C_BORDER),
             ]),
         ))
+        story.append(Spacer(1, 3 * mm))
 
     # ── Deviations — each on its own page block ───────────────────────────────
     deviations = data.get("deviations", [])
@@ -407,7 +414,7 @@ def generate_report(data: dict, output_path: Path) -> None:
         SIDE_MARGIN, FRAME_Y,
         content_w, FRAME_H,
         id="main",
-        leftPadding=0, rightPadding=0, topPadding=0, bottomPadding=0,
+        leftPadding=0, rightPadding=0, topPadding=6, bottomPadding=6,
     )
 
     doc.addPageTemplates([

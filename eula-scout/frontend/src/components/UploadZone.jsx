@@ -58,7 +58,7 @@ export default function UploadZone({ onAnalyze, loading }) {
 
   return (
     <div className="card">
-      <h2 className="text-lg font-semibold text-gray-800 mb-4">Upload EULA Document</h2>
+      <div style={{fontFamily:'Syne,sans-serif',fontSize:18,fontWeight:700,color:'var(--text-primary)',marginBottom:20}}>Upload EULA Document</div>
 
       <div
         role="button"
@@ -69,88 +69,70 @@ export default function UploadZone({ onAnalyze, loading }) {
         onDragLeave={handleDragLeave}
         onClick={() => inputRef.current?.click()}
         onKeyDown={(e) => e.key === 'Enter' && inputRef.current?.click()}
-        className={`relative flex flex-col items-center justify-center rounded-xl border-2 border-dashed transition-all cursor-pointer py-12 px-6 select-none
-          ${dragOver
-            ? 'border-blue-500 bg-blue-50'
-            : file
-            ? 'border-emerald-400 bg-emerald-50'
-            : 'border-gray-300 bg-gray-50 hover:border-blue-400 hover:bg-blue-50'
-          }`}
+        style={{
+          display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',
+          borderRadius:12,border:'2px dashed '+(dragOver?'var(--teal)':file?'rgba(34,197,94,0.5)':'var(--border-accent)'),
+          background:dragOver?'rgba(0,201,177,0.08)':file?'rgba(34,197,94,0.04)':'rgba(0,201,177,0.04)',
+          minHeight:200,padding:'48px 24px',cursor:'pointer',gap:12,
+          transition:'all 0.2s',transform:dragOver?'scale(1.01)':'scale(1)',userSelect:'none',
+        }}
       >
-        <input
-          ref={inputRef}
-          type="file"
-          accept="application/pdf"
-          className="hidden"
-          onChange={handleChange}
-        />
+        <input ref={inputRef} type="file" accept="application/pdf,.pdf" style={{display:'none'}} onChange={handleChange}/>
 
         {file ? (
           <>
-            <div className="w-14 h-14 flex items-center justify-center rounded-full bg-emerald-100 mb-4">
-              <svg className="w-7 h-7 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                  d="M9 12l2 2 4-4M7 21h10a2 2 0 002-2V7l-5-5H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+            <div style={{width:56,height:56,borderRadius:'50%',background:'rgba(34,197,94,0.15)',display:'flex',alignItems:'center',justifyContent:'center',color:'#22C55E'}}>
+              <svg style={{width:26,height:26}} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7 21h10a2 2 0 002-2V7l-5-5H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
               </svg>
             </div>
-            <p className="font-semibold text-gray-800 text-sm">{file.name}</p>
-            <p className="text-xs text-gray-500 mt-1">{formatSize(file.size)}</p>
-            <button
-              type="button"
-              onClick={(e) => { e.stopPropagation(); setFile(null); }}
-              className="mt-3 text-xs text-gray-400 hover:text-red-500 underline transition-colors"
-            >
-              Remove
-            </button>
+            <div style={{background:'var(--bg-elevated)',border:'1px solid var(--border-accent)',color:'var(--teal)',fontSize:12,padding:'6px 14px',borderRadius:100,display:'flex',alignItems:'center',gap:8}}>
+              <svg style={{width:14,height:14,flexShrink:0}} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+              {file.name}
+              <button type="button" onClick={(e)=>{e.stopPropagation();setFile(null);}} style={{background:'none',border:'none',cursor:'pointer',color:'var(--text-dim)',padding:0,marginLeft:4,fontSize:14,lineHeight:1}}>✕</button>
+            </div>
+            <p style={{fontSize:11,color:'var(--text-muted)'}}>{formatSize(file.size)}</p>
           </>
         ) : (
           <>
-            <div className="w-14 h-14 flex items-center justify-center rounded-full bg-gray-100 mb-4">
-              <svg className="w-7 h-7 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
-                  d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+            <div style={{width:56,height:56,borderRadius:'50%',background:'var(--teal-glow)',display:'flex',alignItems:'center',justifyContent:'center',color:'var(--teal)'}}>
+              <svg style={{width:26,height:26}} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
               </svg>
             </div>
-            <p className="font-medium text-gray-700 text-sm">
-              Drag &amp; drop your EULA PDF here
-            </p>
-            <p className="text-xs text-gray-400 mt-1">or click to browse — max 10 MB</p>
+            <p style={{fontSize:15,fontWeight:500,color:'var(--text-primary)',margin:0}}>Drag &amp; drop your EULA PDF here</p>
+            <p style={{fontSize:12,color:'var(--text-muted)',margin:0}}>or click to browse — PDF or DOCX · max 10 MB</p>
           </>
         )}
       </div>
 
       {fileError && (
-        <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
-          <svg className="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-            <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+        <div style={{marginTop:8,fontSize:12,color:'#EF4444',display:'flex',alignItems:'center',gap:6}}>
+          <svg style={{width:14,height:14,flexShrink:0}} fill="currentColor" viewBox="0 0 20 20">
+            <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd"/>
           </svg>
           {fileError}
-        </p>
+        </div>
       )}
 
       <button
         onClick={handleSubmit}
         disabled={loading || !file}
-        className={`mt-5 w-full flex items-center justify-center gap-2 rounded-lg px-6 py-3 text-sm font-semibold transition-all
-          ${loading || !file
-            ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-            : 'bg-blue-700 hover:bg-blue-800 text-white shadow-sm hover:shadow-md'
-          }`}
+        className="btn-primary"
+        style={{width:'100%',marginTop:16}}
       >
         {loading ? (
           <>
-            <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
-              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-              <path className="opacity-75" fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+            <svg style={{width:16,height:16,animation:'spin-teal 0.8s linear infinite',flexShrink:0}} fill="none" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="9" stroke="rgba(0,201,177,0.2)" strokeWidth="3"/>
+              <circle cx="12" cy="12" r="9" stroke="var(--teal)" strokeWidth="3" strokeDasharray="42.4 14.1" strokeLinecap="round"/>
             </svg>
-            Scanning agreement...
+            Analyzing with AI...
           </>
         ) : (
           <>
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+            <svg style={{width:16,height:16}} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
             </svg>
             Analyze EULA
           </>

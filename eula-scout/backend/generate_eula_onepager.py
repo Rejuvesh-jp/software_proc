@@ -164,13 +164,10 @@ def extract_data(pdf_path: Path, company: str, accent: str) -> OnePagerData:
 
     clauses.sort(key=lambda c: [int(x) for x in c.clause_no.split(".") if x.isdigit()])
 
-    def _cap(lst: list[Clause], risk: str) -> list[Clause]:
-        return [c for c in lst if c.risk == risk][:5]
-
-    capped = _cap(clauses, "High") + _cap(clauses, "Medium") + _cap(clauses, "Low")
-    omitted = len(clauses) - len(capped)
-    if omitted > 0:
-        print(f"[INFO] {omitted} clause(s) omitted from heat map (capped at 15).")
+    # No cap — pass all clauses; build_pdf sizes rows dynamically
+    capped = [c for c in clauses if c.risk == "High"] + \
+             [c for c in clauses if c.risk == "Medium"] + \
+             [c for c in clauses if c.risk == "Low"]
 
     empty = Clause("", "—", "", "Low")
     while len(capped) < 15:
@@ -202,9 +199,11 @@ def extract_data(pdf_path: Path, company: str, accent: str) -> OnePagerData:
 
 def _make_donut(data: OnePagerData) -> io.BytesIO:
     """Render a matplotlib donut chart to an in-memory PNG."""
-    high = sum(1 for c in data.clauses if c.risk == "High")
-    med  = sum(1 for c in data.clauses if c.risk == "Medium")
-    low  = sum(1 for c in data.clauses if c.risk == "Low")
+    # Only count real clauses — empty filler entries have clause_no="" and must be excluded
+    real = [c for c in data.clauses if c.clause_no]
+    high = sum(1 for c in real if c.risk == "High")
+    med  = sum(1 for c in real if c.risk == "Medium")
+    low  = sum(1 for c in real if c.risk == "Low")
     fig, ax = plt.subplots(figsize=(2.6, 2.6), dpi=150)
     wedges, _ = ax.pie(
         [max(v, 0.01) for v in [high, med, low]],
@@ -407,20 +406,28 @@ def build_pdf(data: OnePagerData, output_path: Path) -> None:
                             _fit(c, lbl, col_w - 4, "Helvetica-Bold", 6.5))
 
     hm_top -= hdr_h + 1
-    rows   = 5
-    cell_h = max((body_h - hdr_h - 20) / rows, 28)
+
+    # Dynamic rows — fit all real clauses, minimum 5 rows
+    real_cls = [cl for cl in data.clauses if cl.clause_no and cl.title not in ("-", "—", "")]
+    high_all = [cl for cl in real_cls if cl.risk == "High"]
+    med_all  = [cl for cl in real_cls if cl.risk == "Medium"]
+    low_all  = [cl for cl in real_cls if cl.risk == "Low"]
+    rows = max(5, len(high_all), len(med_all), len(low_all))
+
+    # Cell height: shrink proportionally; minimum 20pt to stay readable
+    available_h = body_h - hdr_h - 20
+    cell_h = max(available_h / rows, 20)
+    # If rows × cell_h overflows body, reduce font sizes slightly
+    use_small_font = rows > 8
 
     # usable inner width per cell (border 1pt + padding 3pt each side)
     cell_pad   = 3
     cell_inner = col_w - 1 - cell_pad * 2
 
-    high_cls = [cl for cl in data.clauses if cl.risk == "High"][:rows]
-    med_cls  = [cl for cl in data.clauses if cl.risk == "Medium"][:rows]
-    low_cls  = [cl for cl in data.clauses if cl.risk == "Low"][:rows]
     ph = Clause("", "-", "", "Low")
-    while len(high_cls) < rows: high_cls.append(ph)
-    while len(med_cls)  < rows: med_cls.append(ph)
-    while len(low_cls)  < rows: low_cls.append(ph)
+    high_cls = high_all + [ph] * max(0, rows - len(high_all))
+    med_cls  = med_all  + [ph] * max(0, rows - len(med_all))
+    low_cls  = low_all  + [ph] * max(0, rows - len(low_all))
 
     col_data    = [high_cls, med_cls, low_cls]
     col_fills   = [HIGH_FILL,   MED_FILL,   LOW_FILL]
@@ -435,18 +442,23 @@ def build_pdf(data: OnePagerData, output_path: Path) -> None:
 
             if cl.title and cl.title not in ("-", "—"):
                 ttl = f"{cl.title} §{cl.clause_no}" if cl.clause_no else cl.title
-                # Title line (bold 6.5pt)
-                c.setFont("Helvetica-Bold", 6.5)
+                title_sz = 5.5 if use_small_font else 6.5
+                impl_sz  = 5.0 if use_small_font else 6.0
+                top_off  = min(10, cell_h - 4)
+                # Title line
+                c.setFont("Helvetica-Bold", title_sz)
                 c.setFillColor(DARK_TEXT)
-                c.drawString(cx2 + cell_pad, cy2 + cell_h - 10,
-                             _fit(c, ttl, cell_inner, "Helvetica-Bold", 6.5))
-                # Implication wrapped to max 2 lines at 6pt
-                impl_ls = _lines(c, cl.implication or "", cell_inner, "Helvetica", 6,
-                                 max_lines=2)
-                c.setFont("Helvetica", 6)
+                c.drawString(cx2 + cell_pad, cy2 + cell_h - top_off,
+                             _fit(c, ttl, cell_inner, "Helvetica-Bold", title_sz))
+                # Implication — 1 line when very small cells, 2 lines otherwise
+                max_impl = 1 if cell_h < 32 else 2
+                impl_ls = _lines(c, cl.implication or "", cell_inner, "Helvetica", impl_sz,
+                                 max_lines=max_impl)
+                c.setFont("Helvetica", impl_sz)
                 c.setFillColor(colors.HexColor("#374151"))
+                line_step = impl_sz + 2
                 for li, il in enumerate(impl_ls):
-                    c.drawString(cx2 + cell_pad, cy2 + cell_h - 19 - li * 8, il)
+                    c.drawString(cx2 + cell_pad, cy2 + cell_h - top_off - (li + 1) * line_step, il)
 
     # ── RIGHT: Donut chart ────────────────────────────────────────────────────
     r_cy = body_top

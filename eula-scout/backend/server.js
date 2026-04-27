@@ -6,6 +6,9 @@ const generatePdfRouter = require('./routes/generatePdf');
 const analyzeMSARouter = require('./routes/analyzeMSA');
 const uploadTemplateRouter = require('./routes/uploadTemplate');
 const msaReportPdfRouter = require('./routes/msaReportPdf');
+const eulaReportFromJsonRouter = require('./routes/eulaReportFromJson');
+const eulaFullReportRouter = require('./routes/eulaFullReport');
+const historyRouter = require('./routes/history');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -19,6 +22,9 @@ app.use('/api/generate-pdf', generatePdfRouter);
 app.use('/api/analyze-msa', analyzeMSARouter);
 app.use('/api/upload-template', uploadTemplateRouter);
 app.use('/api/msa-report-pdf', msaReportPdfRouter);
+app.use('/api/eula-report-from-json', eulaReportFromJsonRouter);
+app.use('/api/eula-full-report', eulaFullReportRouter);
+app.use('/api/history', historyRouter);
 
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
